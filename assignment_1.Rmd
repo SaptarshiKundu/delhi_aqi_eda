@@ -1,0 +1,171 @@
+---
+title: "Data Cleaning, Preprocessing & Visualization - R Assignment"
+output: pdf_document
+date: "2023-02-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Group 9
+### Nurul Alam - 101443564
+### Ananth Satish Embrandiri - 101416006
+### Denny Paul - 101411032
+### Anuj Yadav - 101419066
+### Abhishek Singh Bisht - 101420857
+### Saptarshi Kundu - 101365961
+###
+
+
+## Dataset - Delhi Air Quality Index
+### About Dataset
+This dataset contains air quality data from the national capital of Delhi, India. It includes information on air pollution levels, including particulate matter (PM2.5 and PM10) levels, nitrogen dioxide (NO2), sulfur dioxide (SO2), carbon dioxide (CO2), ozone (O3), and other pollutants. The data was collected from monitoring stations located in various areas of Delhi between November 25, 2020, and January 24, 2023. This dataset is a valuable resource for researchers and policymakers to better understand air quality in Delhi and its impacts on public health.
+
+
+### Import Dataset
+```{r}
+aqi = read.csv("delhi_aqi.csv")
+```
+
+### Q1 : Print the structure of the dataset
+```{r}
+str(aqi)
+```
+
+### Q2 : List the variables in your dataset
+```{r}
+colnames(aqi)
+```
+
+### Q3 : Print the top 15 rows of your dataset
+```{r}
+head(aqi, n=15)
+```
+
+### Q4 : Write a user defined function using any of the variables from the data set
+```{r}
+#get_floor = function(x) {
+#  floor(x)
+#}
+
+#aqi$pm_2_5_floor = apply(aqi[, "pm2_5"], 1, get_floor)
+```
+
+### Q5 : Use data manipulation techniques and filter rows based on any logical criteria that exist in your dataset
+```{r, results='hide', message=FALSE, warning=FALSE}
+library(dplyr)
+```
+```{r}
+aqi_no_filter = aqi %>% filter(no > 0.0)
+dim(aqi_no_filter)
+```
+
+### Q6 : Identify the dependent & independent variables and use reshaping techniques and create a new data frame by joining those variables from your dataset
+```{r}
+
+```
+
+### Q7 : Remove missing values in your dataset
+```{r}
+dim(aqi)
+colSums(is.na(aqi))
+aqi = na.omit(aqi)
+dim(aqi)
+```
+
+### Q8 : Identify and remove duplicated data in your dataset
+```{r}
+dim(aqi)
+sum(duplicated(aqi))
+aqi = unique(aqi)
+dim(aqi)
+```
+
+### Q9 : Reorder multiple rows in descending order
+```{r}
+aqi = aqi %>% arrange(desc(date))
+```
+
+### Q10 : Rename some of the column names in your dataset
+```{r}
+colnames(aqi)
+names(aqi)[names(aqi) == "date"] = "Date"
+names(aqi)[names(aqi) == "co"] = "CO"
+names(aqi)[names(aqi) == "no"] = "NO"
+colnames(aqi)
+```
+
+### Q11 : Add new variables in your data frame by using a mathematical function (for e.g. – multiply an existing column by 2 and add it as a new variable to your data frame)
+```{r}
+aqi$total_pm = aqi$pm2_5 + aqi$pm10
+aqi = aqi %>% mutate(pm2_5_10 = pm2_5 * 10)
+```
+
+### Q12 : Create a training set using random number generator engine.
+```{r}
+dim(aqi)
+set.seed(42)
+aqi_train = aqi %>% sample_frac(0.8, replace = FALSE)
+dim(aqi_train)
+```
+
+### Q13 : Print the summary statistics of your dataset
+```{r}
+summary(aqi)
+```
+
+### Q14 : Use any of the numerical variables from the dataset and perform the following statistical functions
+###   • Mean
+###   • Median
+###   • Mode
+###   • Range
+```{r}
+mean(aqi$o3)
+median(aqi$o3)
+#Calculating mode
+counts = table(aqi$o3)
+max_count <- max(counts)
+mode_indices <- which(counts == max_count)
+mode_values <- names(counts)[mode_indices]
+mode_values <- as.numeric(mode_values)
+print(mode_values)
+range(aqi$o3)
+```
+
+### Q15 : Plot a scatter plot for any 2 variables in your dataset
+```{r, results='hide', message=FALSE, warning=FALSE}
+library(ggplot2)
+```
+```{r}
+ggplot(data = aqi,aes(y = NO, x = Date))+geom_point(stat='identity', size = 0.5,
+        color = "steelblue", shape=21)+labs(x = "Month-Year", y = "NO (µg/m3)", 
+        title = "NO level in air between December 2020 - January 2023")
+
+ggplot(data = aqi,aes(y = pm2_5, x = Date))+geom_point(stat='identity', 
+        size = 0.5, color = "steelblue", shape=21)+labs(x = "Month-Year", 
+        y = "pm2.5 (µg/m3)", 
+        title = "pm2.5 level in air between December 2020 - January 2023")
+```
+
+### Q16 : Plot a bar plot for any 2 variables in your dataset
+```{r}
+ggplot(data = aqi,aes(y = CO, x = Date))+geom_bar(stat='identity', 
+        fill = "firebrick")+labs(x = "Month-Year", y = "CO (µg/m3)", 
+        title = "CO level in air between December 2020 - January 2023")
+
+ggplot(data = aqi,aes(y = pm10, x = Date))+geom_bar(stat='identity', 
+        fill = "firebrick")+labs(x = "Month-Year", y = "pm10 (µg/m3)", 
+        title = "pm10 level in air between December 2020 - January 2023")
+```
+
+### Q17 : Find the correlation between any 2 variables by applying least square linear regression model
+```{r}
+Y = aqi[, "NO"]
+X = aqi[, "CO"]
+co_no_corr = cor(Y,X, method="pearson")
+co_no_corr
+```
+
+
