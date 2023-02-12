@@ -1,7 +1,6 @@
 # Delhi Air Quality Index Exploratiory Data Analysis in R
-This repository is used for learning basic functions of R. 
 
-## Goal of the project
+## Goal of the Project
 The primary objective of this project is to understand the basic functionalities of R language. This is not meant to be a proper analysis of the data, but rather try out different commands in R to get a basic understanding of how it can be used to clean, process and visualize data using R.
 
 ## About Dataset
